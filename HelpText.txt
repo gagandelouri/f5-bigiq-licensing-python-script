@@ -1,0 +1,80 @@
+Help Text
+fochan$ python bigiplicmgr.py -h
+usage: bigiplicmgr.py [-h] --licmgr_ip LICMGR_IP --licmgr_adm LICMGR_ADM
+                      --licmgr_pwd LICMGR_PWD [--bigip_ip BIGIP_IP]
+                      [--bigip_adm BIGIP_ADM] [--bigip_pwd BIGIP_PWD] --action
+                      ACTION [--regkey_pool_name REGKEY_POOL_NAME]
+                      [--regkey REGKEY]
+F5 BIG-IP License Manager Utilities
+optional arguments:
+  -h, --help            show this help message and exit
+  --licmgr_ip LICMGR_IP
+                        F5 license manager IP Address
+  --licmgr_adm LICMGR_ADM
+                        F5 license manager admin username
+  --licmgr_pwd LICMGR_PWD
+                        F5 license manager admin password
+  --bigip_ip BIGIP_IP   BIG-IP IP address (license target)
+  --bigip_adm BIGIP_ADM
+                        BIG-IP admin username (e.g. admin)
+  --bigip_pwd BIGIP_PWD
+                        BIG-IP admin password
+  --action ACTION       F5 license manager actions (dump-license, assign-
+                        license, revoke-license
+  --regkey_pool_name REGKEY_POOL_NAME
+                        License Manager RegKey License Pool Name
+  --regkey REGKEY       Registration Key string. By default retrieve available
+                        license string from LM. This to overwrite
+ 
+ 
+To assign and trigger license push from LM onto BIG-IP
+fochan$ python bigiplicmgr.py --licmgr_ip 192.168.110.52 --licmgr_adm admin --licmgr_pwd passw0rd --regkey_pool_name RegKeyPool --bigip_ip 192.168.110.123 --bigip_adm admin --bigip_pwd admin --action assign-license
+-------------------------------------------------------------
+License key GFETI-YNGBG-ZOMEQ-RHNMG-XKQTACQ successfully assigned
+-------------------------------------------------------------
+{
+  "status": "INSTALLING",
+  "deviceName": "bigip1",
+  "kind": "cm:device:licensing:pool:regkey:licenses:item:offerings:regkey:members:regkeypoollicensememberstate",
+  "deviceMachineId": "1c372a1d-ac78-4af0-838e-d1cf2b8e7dbf",
+  "generation": 1,
+  "httpsPort": 443,
+  "deviceAddress": "192.168.110.123",
+  "lastUpdateMicros": 1505025651033891,
+  "id": "5dc7aed0-a528-4bdf-956f-8d64910bdae2",
+  "selfLink": "https://localhost/mgmt/cm/device/licensing/pool/regkey/licenses/b5f76ecb-89c5-4a9f-85ad-04187b61657f/offerings/GFETI-YNGBG-ZOMEQ-RHNMG-XKQTACQ/members/5dc7aed0-a528-4bdf-956f-8d64910bdae2"
+}
+ 
+To dump all license key and it status on BIG-IQ LM
+fochan$ python bigiplicmgr.py --licmgr_ip 192.168.110.52 --licmgr_adm admin --licmgr_pwd passw0rd --regkey_pool_name RegKeyPool --action dump-license
+-----------------------------------
+License key dump for RegKeyPool
+-----------------------------------
+RegKey                              DeviceName           DeviceAddress        Status
+TXLPP-PNFCD-LAEGV-HKXFY-NBKZXPS     f.foobz.com          192.168.101.121      LICENSED
+EZAZF-JYCQJ-KEIFE-OQWCE-QDNEEQY     bigip1               192.168.101.122      LICENSED
+GFETI-YNGBG-ZOMEQ-RHNMG-XKQTACQ     bigip1               192.168.110.123      LICENSED
+
+
+By default, it automatically assign an un-used RegKey from the list. If you want to force to use a specific RegKey
+MEL-ML-FOCHAN:bigiplicmgr fochan$ python bigiplicmgr.py --licmgr_ip 192.168.110.52 --licmgr_adm admin --licmgr_pwd passw0rd --regkey_pool_name RegKeyPool --bigip_ip 192.168.101.121 --bigip_adm admin --bigip_pwd admin --action assign-license --regkey_string EZAZF-JYCQJ-KEIFE-OQWCE-QDNEEQY
+-------------------------------------------------------------
+License key EZAZF-JYCQJ-KEIFE-OQWCE-QDNEEQY successfully assigned
+-------------------------------------------------------------
+{
+  "status": "INSTALLING",
+  "deviceName": "f.foobz.com",
+  "kind": "cm:device:licensing:pool:regkey:licenses:item:offerings:regkey:members:regkeypoollicensememberstate",
+  "deviceMachineId": "5235024f-7449-40e9-b386-188c65036be3",
+  "generation": 1,
+  "httpsPort": 443,
+  "deviceAddress": "192.168.101.121",
+  "lastUpdateMicros": 1505026455066898,
+  "id": "ab4a0faf-15e8-4eac-af07-ce8cd9e6abe8",
+  "selfLink": "https://localhost/mgmt/cm/device/licensing/pool/regkey/licenses/b5f76ecb-89c5-4a9f-85ad-04187b61657f/offerings/EZAZF-JYCQJ-KEIFE-OQWCE-QDNEEQY/members/ab4a0faf-15e8-4eac-af07-ce8cd9e6abe8"
+}
+
+ 
+To revoke/return a licensed assigned on specific BIG-IP IP address
+fochan$ python bigiplicmgr.py --licmgr_ip 192.168.110.52 --licmgr_adm admin --licmgr_pwd passw0rd --regkey_pool_name RegKeyPool --bigip_ip 192.168.101.121 --bigip_adm admin --bigip_pwd admin --action revoke-license
+
