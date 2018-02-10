@@ -1,0 +1,5 @@
+
+
+python bigiplicmgr.py --licmgr_ip 10.1.1.247 --licmgr_adm admin --licmgr_pwd default --regkey_pool_name RegKeyPool --action dump-license
+
+python bigiplicmgr.py --licmgr_ip 10.1.1.247 --licmgr_adm admin --licmgr_pwd default --regkey_pool_name BIG-IP-BEST-10.1.1.245 --action dump-license
